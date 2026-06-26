@@ -26,6 +26,7 @@
   "koishi": {
     "service": {
       "implements": [
+        "pinyin",
         "pinyin-pro"
       ]
     }

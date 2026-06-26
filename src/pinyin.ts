@@ -1,3 +1,4 @@
+import type { Context } from 'koishi'
 import type { Pinyin, PinyinConvertOptions } from 'koishi-plugin-pinyin'
 import type { Buffer } from 'node:buffer'
 import { Service } from 'koishi'
@@ -15,7 +16,11 @@ const styleMap: Record<
   [PINYIN_STYLE.FirstLetter]: { pattern: 'first' },
 }
 
-export default class PinyinPro extends Service implements Omit<Pinyin, 'getNativeBinding'> {
+export default class PinyinService extends Service implements Omit<Pinyin, 'getNativeBinding'> {
+  constructor(ctx: Context) {
+    super(ctx, 'pinyin')
+  }
+
   async start(): Promise<void> {}
   async asyncPinyin(input: string | Buffer, opt?: PinyinConvertOptions | null) {
     return this.pinyin(input, opt)
