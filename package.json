@@ -1,13 +1,16 @@
 {
   "name": "koishi-plugin-pinyin-pro",
-  "version": "1.1.1",
-  "description": "为 koishi 提供 pinyin-pro 服务",
+  "version": "1.1.2",
+  "description": "为 koishi 提供 pinyin 服务和 pinyin-pro 服务",
   "typings": "lib/index.d.ts",
   "license": "MIT",
   "keywords": [
     "chatbot",
     "koishi",
-    "plugin"
+    "plugin",
+    "service",
+    "pinyin",
+    "pinyin-pro"
   ],
   "main": "lib/index.js",
   "files": [
