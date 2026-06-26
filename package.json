@@ -20,6 +20,9 @@
   "dependencies": {
     "pinyin-pro": "^3.28.1"
   },
+  "devDependencies": {
+    "koishi-plugin-pinyin": "^0.3.0"
+  },
   "koishi": {
     "service": {
       "implements": [
