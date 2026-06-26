@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-pinyin-pro",
   "description": "为 koishi 提供 pinyin-pro 服务",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
