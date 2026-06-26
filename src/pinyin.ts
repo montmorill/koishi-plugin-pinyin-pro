@@ -1,22 +1,42 @@
 import type { Context } from 'koishi'
 import type { Pinyin, PinyinConvertOptions } from 'koishi-plugin-pinyin'
 import type { Buffer } from 'node:buffer'
-import { Service } from 'koishi'
+import { Schema, Service } from 'koishi'
 import { PINYIN_STYLE } from 'koishi-plugin-pinyin'
 import { pinyin } from 'pinyin-pro'
+
+const segmentStrategies = ['reverse-max-match', 'max-probability', 'min-tokenization']
+function strategyToEnum(strategy: typeof segmentStrategies[number]) {
+  return segmentStrategies.indexOf(strategy) + 1
+}
+
+export interface Config {
+  segmentit: {
+    enabled: typeof segmentStrategies[number]
+    disabled: typeof segmentStrategies[number]
+  }
+}
+
+export const Config: Schema<Config> = Schema.object({
+  segmentit: Schema.object({
+    enabled: Schema.union(segmentStrategies).default('max-probability').description('启用 segment 参数时使用的分词算法。'),
+    disabled: Schema.union(segmentStrategies).default('reverse-max-match').description('禁用 segment 参数时使用的分词算法。'),
+  }).description('分词算法'),
+})
 
 const styleMap: Record<
   NonNullable<PinyinConvertOptions['style']>,
   Partial<Parameters<typeof pinyin>[1]>
 > = {
-  [PINYIN_STYLE.Plain]: { toneType: 'none' },
-  [PINYIN_STYLE.WithTone]: { toneType: 'symbol' },
-  [PINYIN_STYLE.WithToneNum]: { toneType: 'num' }, // TODO: support this
-  [PINYIN_STYLE.WithToneNumEnd]: { toneType: 'num' },
-  [PINYIN_STYLE.FirstLetter]: { pattern: 'first' },
+  0: { toneType: 'none' },
+  1: { toneType: 'symbol' },
+  2: { toneType: 'num' }, // TODO: support PINYIN_STYLE.WithToneNum
+  3: { toneType: 'num' },
+  4: { pattern: 'first' },
 }
 
-export default class PinyinService extends Service implements Omit<Pinyin, 'getNativeBinding'> {
+export default class PinyinService extends Service<Config>
+  implements Omit<Pinyin, 'getNativeBinding' | 'config'> {
   constructor(ctx: Context) {
     super(ctx, 'pinyin')
   }
@@ -34,7 +54,9 @@ export default class PinyinService extends Service implements Omit<Pinyin, 'getN
     const array = pinyin(word, {
       type: 'all',
       ...styleMap[opt?.style || PINYIN_STYLE.Plain],
-      segmentit: opt?.segment ? 2 : 1,
+      segmentit: opt?.segment
+        ? strategyToEnum(this.config.segmentit.enabled)
+        : strategyToEnum(this.config.segmentit.disabled),
     })
     if (opt?.heteronym)
       return array.map(data => data.pinyin) as any
