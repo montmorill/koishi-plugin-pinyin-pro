@@ -1,11 +1,18 @@
-import { Context, Schema } from 'koishi'
+import { Context, Service } from 'koishi'
+import pinyinPro from 'pinyin-pro'
 
-export const name = 'pinyin-pro'
-
-export interface Config {}
-
-export const Config: Schema<Config> = Schema.object({})
-
-export function apply(ctx: Context, config: Config) {
-  // write your plugin here
+declare module 'koishi' {
+  interface Context {
+    'pinyin-pro': PinyinProService
+  }
 }
+
+class PinyinProService extends Service {
+  name = 'pinyin-pro'
+
+  constructor(ctx: Context) {
+    super(ctx, 'pinyin-pro')
+  }
+}
+
+export default Object.assign(PinyinProService.prototype, pinyinPro)
