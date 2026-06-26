@@ -1,6 +1,8 @@
-import { Service } from 'koishi';
-import { PINYIN_STYLE, type Pinyin, type PinyinConvertOptions } from 'koishi-plugin-pinyin'
-import { pinyin } from 'pinyin-pro';
+import type { Pinyin, PinyinConvertOptions } from 'koishi-plugin-pinyin'
+import type { Buffer } from 'node:buffer'
+import { Service } from 'koishi'
+import { PINYIN_STYLE } from 'koishi-plugin-pinyin'
+import { pinyin } from 'pinyin-pro'
 
 const styleMap: Record<
   NonNullable<PinyinConvertOptions['style']>,
@@ -11,7 +13,7 @@ const styleMap: Record<
   [PINYIN_STYLE.WithToneNum]: { toneType: 'num' }, // TODO: support this
   [PINYIN_STYLE.WithToneNumEnd]: { toneType: 'num' },
   [PINYIN_STYLE.FirstLetter]: { pattern: 'first' },
-};
+}
 
 export default class PinyinPro extends Service implements Omit<Pinyin, 'getNativeBinding'> {
   async start(): Promise<void> {}
@@ -21,7 +23,7 @@ export default class PinyinPro extends Service implements Omit<Pinyin, 'getNativ
 
   pinyin<T extends PinyinConvertOptions>(
     input: string | Buffer,
-    opt?: T | null
+    opt?: T | null,
   ): T extends { heteronym: true } ? string[][] : string[] {
     const word = typeof input === 'string' ? input : input.toString()
     const array = pinyin(word, {
@@ -30,8 +32,8 @@ export default class PinyinPro extends Service implements Omit<Pinyin, 'getNativ
       segmentit: opt?.segment ? 2 : 1,
     })
     if (opt?.heteronym)
-      return array.map((data) => data.pinyin) as any
-    return array.map((data) => data.polyphonic) as any
+      return array.map(data => data.pinyin) as any
+    return array.map(data => data.polyphonic) as any
   }
 
   compare(inputA: string, inputB: string) {

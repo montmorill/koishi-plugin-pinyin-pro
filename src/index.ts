@@ -1,4 +1,6 @@
-import { Context, Service } from 'koishi'
+/* eslint-disable ts/no-unsafe-declaration-merging */
+import type { Context } from 'koishi'
+import { Service } from 'koishi'
 import pinyinPro from 'pinyin-pro'
 
 declare module 'koishi' {
