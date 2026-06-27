@@ -2,7 +2,6 @@ import type { Context } from 'koishi'
 import type { Pinyin, PinyinConvertOptions } from 'koishi-plugin-pinyin'
 import type { Buffer } from 'node:buffer'
 import { Schema, Service } from 'koishi'
-import { PINYIN_STYLE } from 'koishi-plugin-pinyin'
 import { pinyin } from 'pinyin-pro'
 
 const segmentStrategies = ['reverse-max-match', 'max-probability', 'min-tokenization']
@@ -28,11 +27,11 @@ const styleMap: Record<
   NonNullable<PinyinConvertOptions['style']>,
   Partial<Parameters<typeof pinyin>[1]>
 > = {
-  0: { toneType: 'none' },
-  1: { toneType: 'symbol' },
-  2: { toneType: 'num' }, // TODO: support PINYIN_STYLE.WithToneNum
-  3: { toneType: 'num' },
-  4: { pattern: 'first' },
+  0: { toneType: 'none' }, // Plain
+  1: { toneType: 'symbol' }, // WithTone
+  2: { toneType: 'num' }, // WithToneNum TODO: support this
+  3: { toneType: 'num' }, // WithToneNumEnd
+  4: { pattern: 'first' }, // FirstLetter
 }
 
 export default class PinyinService extends Service<Config>
@@ -53,7 +52,7 @@ export default class PinyinService extends Service<Config>
     const word = typeof input === 'string' ? input : input.toString()
     const array = pinyin(word, {
       type: 'all',
-      ...styleMap[opt?.style || PINYIN_STYLE.Plain],
+      ...styleMap[opt?.style || 0], // default to `Plain`
       segmentit: opt?.segment
         ? strategyToEnum(this.config.segmentit.enabled)
         : strategyToEnum(this.config.segmentit.disabled),
