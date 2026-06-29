@@ -36,7 +36,7 @@ const styleMap: Record<
 
 export default class PinyinService extends Service<Config>
   implements Omit<Pinyin, 'getNativeBinding' | 'config'> {
-  constructor(ctx: Context) {
+  constructor(ctx: Context, public config: Config) {
     super(ctx, 'pinyin')
   }
 

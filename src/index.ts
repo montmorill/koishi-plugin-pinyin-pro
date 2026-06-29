@@ -1,4 +1,5 @@
 import type { Context } from 'koishi'
+import type { Config } from './pinyin'
 import PinyinService from './pinyin'
 import PinyinProService from './pinyin-pro'
 
@@ -11,7 +12,7 @@ declare module 'koishi' {
   }
 }
 
-export function apply(ctx: Context) {
-  ctx.plugin(PinyinService)
+export function apply(ctx: Context, config: Config) {
+  ctx.plugin(PinyinService, config)
   ctx.plugin(PinyinProService)
 }
