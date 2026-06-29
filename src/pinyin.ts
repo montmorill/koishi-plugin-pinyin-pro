@@ -58,8 +58,8 @@ export default class PinyinService extends Service<Config>
         : strategyToEnum(this.config.segmentit.disabled),
     })
     if (opt?.heteronym)
-      return array.map(data => data.pinyin) as any
-    return array.map(data => data.polyphonic) as any
+      return array.map(data => data.polyphonic) as any[]
+    return array.map(data => data.pinyin) as any[]
   }
 
   compare(inputA: string, inputB: string) {
